@@ -24,9 +24,13 @@ Not by a static host (Netlify/Vercel/etc.) — this repo's own build output is s
 }
 ```
 
-`sections` is a **list**, not a keyed object — that's what lets the CMS's list widget (add/remove/reorder/edit items visually) bind to it directly. `photo`, when set, is a path relative to `public/photos/` with no leading slash (e.g. `about/family.jpg`, not `/photos/about/family.jpg`). A farm-page section whose `key` starts with `mob` renders in the "Our Mobs" card grid on `/farm`; every other section renders as a plain text block. This exact shape — the list form, the `photo` convention — must stay in sync with `src/content/config.ts`'s schema here and with the JARVIS module that writes it; if one changes, change all three.
+`sections` is a **list**, not a keyed object — that's what lets the CMS's list widget (add/remove/reorder/edit items visually) bind to it directly. `photo`, when set, is a path relative to `src/assets/photos/` with no leading slash (e.g. `about/family.jpg`, not `/photos/about/family.jpg`). A farm-page section whose `key` starts with `mob` renders in the "Our Mobs" card grid on `/farm`; every other section renders as a plain text block. This exact shape — the list form, the `photo` convention — must stay in sync with `src/content/config.ts`'s schema here and with the JARVIS module that writes it; if one changes, change all three.
 
-Until a photo path actually exists under `public/photos/`, pages show an honest "Photo coming soon" placeholder instead of a broken image — see `src/components/PhotoBlock.astro`.
+Until a photo path actually exists under `src/assets/photos/`, pages show an honest "Photo coming soon" placeholder instead of a broken image — see `src/components/PhotoBlock.astro`.
+
+### Image pipeline
+
+Photos live under `src/assets/photos/`, not `public/`. This isn't cosmetic: only images under `src/` go through Astro's real build-time image pipeline (`astro:assets`) — resize, re-encode to AVIF, and a real `srcset` for different viewport widths. Anything dropped in `public/` gets served exactly as uploaded, at whatever resolution and format it came in, which is what caused the original hero photo to look soft/pixelated once the browser scaled it up. `Hero.astro` and `PhotoBlock.astro` both resolve a `photo` path against `src/assets/photos/` via `import.meta.glob(..., { eager: true })` (Vite's way of importing every file under a directory into a lookup map, since the exact filename isn't known until content is read), then render it through `<Image>` instead of a plain `<img>`. JARVIS's `website.replacePhoto` and the CMS media library both write to this same directory — the `photo` field's value is unaffected, just the actual bytes' location changed.
 
 The starter content in `src/content/pages/` is placeholder text, not real farm details — it's meant to be replaced via chat ("update the About page to say...") or the CMS, not edited as if it were final copy.
 

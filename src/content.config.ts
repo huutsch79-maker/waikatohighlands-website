@@ -22,7 +22,7 @@ const pages = defineCollection({
         key: z.string(),
         heading: z.string().optional(),
         body: z.string(),
-        /** Relative path under public/photos/, e.g. "farm/mob-1.jpg". */
+        /** Relative path under src/assets/photos/, e.g. "farm/mob-1.jpg" — resolved through Astro's image pipeline (see Hero.astro / PhotoBlock.astro), not served raw. */
         photo: z.string().optional(),
       }),
     ),

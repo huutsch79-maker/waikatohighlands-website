@@ -1,6 +1,5 @@
 ---
-import { existsSync } from "node:fs";
-import path from "node:path";
+import { Image } from "astro:assets";
 
 interface Props {
   src?: string;
@@ -10,16 +9,32 @@ interface Props {
 }
 const { src, alt, aspect = "4 / 3", rounded = true } = Astro.props;
 
-// Checked at build time, not runtime — this repo's photos live in
-// public/photos/ and are added either by JARVIS's farm-website module or
-// through the Sveltia CMS admin. Until a given path actually exists, show
-// an honest placeholder instead of a broken image icon.
-const exists = src ? existsSync(path.join(process.cwd(), "public", "photos", src)) : false;
+// Resolved against src/assets/photos/ (not public/) so Astro's real image
+// pipeline (resize, re-encode, srcset) runs on it at build time — see
+// Hero.astro for the fuller rationale. Checked at build time; until a
+// given path actually exists, show an honest placeholder instead of a
+// broken image icon. Photos are added either by JARVIS's farm-website
+// module or through the Sveltia CMS admin.
+const photoFiles = import.meta.glob<{ default: ImageMetadata }>("/src/assets/photos/**/*.{jpeg,jpg,png,gif,webp,avif}", {
+  eager: true,
+});
+const resolved = src ? photoFiles[`/src/assets/photos/${src}`]?.default : undefined;
 ---
 
 {
-  exists ? (
-    <img class:list={["photo-block", { "photo-block--rounded": rounded }]} src={`/photos/${src}`} alt={alt} style={`aspect-ratio: ${aspect}`} loading="lazy" />
+  resolved ? (
+    <Image
+      class:list={["photo-block", { "photo-block--rounded": rounded }]}
+      src={resolved}
+      alt={alt}
+      width={960}
+      widths={[480, 720, 960]}
+      sizes="(min-width: 42rem) 50vw, 100vw"
+      quality="high"
+      format="avif"
+      style={`aspect-ratio: ${aspect}`}
+      loading="lazy"
+    />
   ) : (
     <div class:list={["photo-block", "photo-block--placeholder", { "photo-block--rounded": rounded }]} style={`aspect-ratio: ${aspect}`} role="img" aria-label={alt}>
       <span>Photo coming soon</span>

@@ -15,7 +15,16 @@ backend:
   # worker is deployed, with its actual URL:
   # base_url: https://sveltia-cms-auth.<your-subdomain>.workers.dev
 
-media_folder: "public/photos"
+media_folder: "src/assets/photos"
+# No route serves src/assets/ directly (unlike the old public/photos/ setup)
+# — those files only ever reach a browser through Astro's build-time image
+# pipeline (see Hero.astro / PhotoBlock.astro), which is what fixed the
+# pixelation/sharpness problem raw public/ serving had. One known
+# consequence: this CMS's own media-library preview thumbnail won't
+# resolve for images uploaded here, since public_folder has nowhere real
+# to point it at. Not blocking (chat-driven edits via JARVIS don't go
+# through this admin UI at all), but flagged as unfinished — same status
+# as the OAuth login proxy above.
 public_folder: "/photos"
 
 collections:
@@ -46,5 +55,5 @@ collections:
               name: photo,
               widget: string,
               required: false,
-              hint: "Path relative to public/photos/, no leading slash — e.g. farm/mob-1.jpg. Upload the file itself through the media library (the folder icon in this CMS), then paste its path here.",
+              hint: "Path relative to src/assets/photos/, no leading slash — e.g. farm/mob-1.jpg. Upload the file itself through the media library (the folder icon in this CMS), then paste its path here.",
             }
