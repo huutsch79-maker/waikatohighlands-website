@@ -68,7 +68,8 @@ const resolved = photo ? photoFiles[`/src/assets/photos/${photo}`]?.default : un
   }
 
   .hero--photo {
-    padding: 0 0 3.5rem;
+    position: relative;
+    padding: 0;
     overflow: hidden;
   }
   .hero__image {
@@ -81,6 +82,16 @@ const resolved = photo ? photoFiles[`/src/assets/photos/${photo}`]?.default : un
     animation:
       hero-fade 900ms ease-out both,
       hero-zoom 24s ease-out 900ms both;
+  }
+
+  /* Scrim behind the caption so title/tagline stay legible over any
+     photo, without needing to know that photo's brightness in advance. */
+  .hero--photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(20, 16, 12, 0.75) 0%, rgba(20, 16, 12, 0.35) 32%, rgba(20, 16, 12, 0) 60%);
+    pointer-events: none;
   }
 
   @keyframes hero-fade {
@@ -107,6 +118,20 @@ const resolved = photo ? photoFiles[`/src/assets/photos/${photo}`]?.default : un
     }
   }
   .hero--photo .hero__caption {
-    padding-top: 2.5rem;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0 0 2.75rem;
+    color: #fff;
+  }
+  .hero--photo .hero__caption h1 {
+    color: #fff;
+  }
+  .hero--photo .hero__caption .eyebrow {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .hero--photo .hero__caption .hero__tagline {
+    color: rgba(255, 255, 255, 0.9);
   }
 </style>
