@@ -9,6 +9,11 @@ backend:
   name: github
   repo: huutsch79-maker/waikatohighlands-website
   branch: main
+  # Points the CMS's GitHub OAuth handshake at a self-hosted auth worker —
+  # see README.md "GitHub OAuth login for /admin" for what to deploy and
+  # why this can't just point at github.com directly. Uncomment once that
+  # worker is deployed, with its actual URL:
+  # base_url: https://sveltia-cms-auth.<your-subdomain>.workers.dev
 
 media_folder: "public/photos"
 public_folder: "/photos"

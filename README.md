@@ -39,11 +39,21 @@ npm run dev
 
 `npm run build` produces `dist/`, which is what `website-server` actually serves in production — there's no separate deploy step beyond that build.
 
-## Follow-up: Sveltia CMS's GitHub login isn't wired up yet
+## GitHub OAuth login for /admin
 
-Sveltia CMS (like Decap CMS before it) needs a small OAuth proxy to complete GitHub's OAuth handshake — it can't do that purely client-side from a static page. `admin/config.yml` is otherwise ready to go (backend, collections, and fields all match this repo's content shape); what's missing is that proxy. Two realistic options when this becomes worth doing:
+Sveltia CMS (like Decap CMS before it) needs a small OAuth client to complete GitHub's OAuth handshake — it can't do that purely client-side from a static page. `admin/config.yml` is otherwise ready to go (backend, collections, and fields all match this repo's content shape); what's missing is pointing it at a deployed OAuth worker. This doesn't block JARVIS's chat-driven edits at all — those authenticate straight to GitHub with a static token, no OAuth handshake involved. It only blocks a human logging into `/admin`.
 
-1. Self-host a small OAuth proxy (a handful of well-known open source implementations exist for exactly this — e.g. search "netlify-cms-github-oauth-provider" or similar successors) — could run as one more tiny service alongside `website-server`.
-2. Use a hosted option if one is otherwise in use for something else already (e.g. a Cloudflare Worker doing the same job).
+Use Sveltia's own maintained worker, [`sveltia/sveltia-cms-auth`](https://github.com/sveltia/sveltia-cms-auth), rather than a hand-rolled proxy — it's already built for exactly this and shouldn't be reimplemented or vendored into this repo.
 
-Until that's done, `/admin` won't complete a human login. It doesn't block JARVIS's chat-driven edits at all — those authenticate straight to GitHub with a static token, no OAuth handshake involved.
+1. **Register a GitHub OAuth App** — GitHub → Settings → Developer settings → OAuth Apps → New OAuth App.
+   - Homepage URL: `https://waikatohighlands.com`
+   - Authorization callback URL: `https://sveltia-cms-auth.<your-subdomain>.workers.dev/callback` (you'll know the real subdomain after step 2 — come back and set this once deployed).
+   - Note the generated Client ID and Client Secret.
+2. **Deploy the worker** — clone `sveltia/sveltia-cms-auth` and run `wrangler deploy` (or use its one-click Cloudflare deploy button). This is a separate small Cloudflare Worker, not part of this repo — it could run alongside `website-server`'s Cloudflare Tunnel setup, or as its own Worker, since Workers don't need the NUC at all.
+3. **Set the worker's environment variables** in the Cloudflare dashboard (Settings → Variables) for that Worker:
+   - `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` — from step 1.
+   - `ALLOWED_DOMAINS` — set to `waikatohighlands.com` so only this site can use it.
+4. **Go back and fix the callback URL** in the GitHub OAuth App (step 1) to match the real Worker URL Cloudflare assigned.
+5. **Uncomment `base_url` in `admin/config.yml`** and set it to that same Worker URL, then commit.
+
+Once all five steps are done, `/admin` will complete GitHub logins for human editors.
