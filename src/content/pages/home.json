@@ -4,7 +4,7 @@
     {
       "key": "hero",
       "heading": "Waikato Highlands",
-      "body": "Update this tagline any time — just tell JARVIS what you'd like it to say. Once a real photo is added here (via chat or the CMS), it becomes the full-width hero image."
+      "photo": "home/hero.jpg"
     },
     {
       "key": "welcome",
