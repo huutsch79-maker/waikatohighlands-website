@@ -1,0 +1,10 @@
+{
+  "title": "About Us",
+  "sections": [
+    {
+      "key": "intro",
+      "heading": "Our Family",
+      "body": "This is where your family's story goes. Tell JARVIS what you'd like this page to say — for example, \"update the About page, we're a family of four and have run this place since 2019\" — or edit it directly in the CMS admin. Either way it goes live right away."
+    }
+  ]
+}

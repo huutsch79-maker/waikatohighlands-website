@@ -1,0 +1,69 @@
+---
+import { getEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import PhotoBlock from "../components/PhotoBlock.astro";
+
+const entry = await getEntry("pages", "farm");
+const { title, sections } = entry!.data;
+const intro = sections.filter((s) => !s.key.startsWith("mob"));
+const mobs = sections.filter((s) => s.key.startsWith("mob"));
+---
+
+<Layout title={title}>
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">The Farm</span>
+      <h1>{title}</h1>
+      {
+        intro.map((section) => (
+          <div>
+            {section.heading && <h2>{section.heading}</h2>}
+            <p>{section.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  {
+    mobs.length > 0 && (
+      <section class="section section--alt">
+        <div class="wrap">
+          <h2>Our Mobs</h2>
+          <div class="mob-grid">
+            {mobs.map((section) => (
+              <article class="card mob-card">
+                <PhotoBlock src={section.photo} alt={section.heading ?? section.key} aspect="4 / 3" rounded={false} />
+                <div class="mob-card__body">
+                  {section.heading && <h3>{section.heading}</h3>}
+                  <p>{section.body}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</Layout>
+
+<style>
+  .mob-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1.75rem;
+    margin-top: 2rem;
+  }
+  .mob-card__body {
+    padding: 1.25rem 1.25rem 1.5rem;
+  }
+  .mob-card__body h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+  .mob-card__body p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+</style>

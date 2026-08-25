@@ -1,0 +1,45 @@
+# Sveltia CMS config — see https://github.com/sveltia/sveltia-cms
+#
+# Content shape here (a list of {key, heading, body, photo} per page) must
+# stay in sync with src/content/config.ts's Zod schema and with the
+# farm-website JARVIS module (waikatohighlands/src/modules/website/index.ts
+# in the JARVIS repo) — all three read/write the exact same files.
+
+backend:
+  name: github
+  repo: huutsch79-maker/waikatohighlands-website
+  branch: main
+
+media_folder: "public/photos"
+public_folder: "/photos"
+
+collections:
+  - name: pages
+    label: Pages
+    folder: "src/content/pages"
+    format: json
+    create: false # pages are added via JARVIS chat (website.addPage) or by hand — not from this list view
+    delete: false
+    identifier_field: title
+    fields:
+      - { label: "Title", name: title, widget: string }
+      - label: Sections
+        name: sections
+        widget: list
+        summary: "{{fields.heading}} ({{fields.key}})"
+        fields:
+          - {
+              label: "Key",
+              name: key,
+              widget: string,
+              hint: "Unique id for this section, e.g. intro, mob-1 — don't change this once JARVIS or a page template references it.",
+            }
+          - { label: "Heading", name: heading, widget: string, required: false }
+          - { label: "Body", name: body, widget: text }
+          - {
+              label: "Photo",
+              name: photo,
+              widget: string,
+              required: false,
+              hint: "Path relative to public/photos/, no leading slash — e.g. farm/mob-1.jpg. Upload the file itself through the media library (the folder icon in this CMS), then paste its path here.",
+            }

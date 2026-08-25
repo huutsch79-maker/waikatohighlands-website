@@ -1,0 +1,37 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import PhotoBlock from "../components/PhotoBlock.astro";
+---
+
+<Layout title="Home">
+  <Hero eyebrow="A family farm" title="Waikato Highlands" tagline="Update this tagline any time — just tell JARVIS what you'd like it to say." />
+  <section class="section">
+    <div class="wrap intro-grid">
+      <div>
+        <h2>Welcome</h2>
+        <p>
+          This paragraph is a placeholder for your homepage introduction. Tell JARVIS what you'd like it to say, or
+          edit it directly in the CMS admin — either way it's live right away.
+        </p>
+        <p><a href="/about">Meet the family &rarr;</a></p>
+        <p><a href="/farm">See the farm &rarr;</a></p>
+      </div>
+      <PhotoBlock alt="Farm landscape" aspect="4 / 3" />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (max-width: 42rem) {
+    .intro-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,25 @@
+{
+  "title": "The Farm",
+  "sections": [
+    {
+      "key": "intro",
+      "heading": "What We Do",
+      "body": "Describe the farm here — what you raise, how you work the land, what makes it yours. Tell JARVIS and this updates instantly."
+    },
+    {
+      "key": "mob-1",
+      "heading": "Mob One",
+      "body": "A short description of this group — breed, size, paddock, whatever's worth telling visitors. Attach a photo in chat and ask JARVIS to add it here."
+    },
+    {
+      "key": "mob-2",
+      "heading": "Mob Two",
+      "body": "A short description of this group."
+    },
+    {
+      "key": "mob-3",
+      "heading": "Mob Three",
+      "body": "A short description of this group."
+    }
+  ]
+}

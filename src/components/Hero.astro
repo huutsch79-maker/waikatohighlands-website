@@ -1,0 +1,31 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  tagline: string;
+}
+const { eyebrow, title, tagline } = Astro.props;
+---
+
+<section class="hero">
+  <div class="wrap">
+    {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+    <h1>{title}</h1>
+    <p class="hero__tagline">{tagline}</p>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding: 6rem 0 5rem;
+    background:
+      radial-gradient(circle at 12% 20%, var(--accent-soft), transparent 55%),
+      radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--sage) 18%, transparent), transparent 50%),
+      var(--bg);
+  }
+  .hero__tagline {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    max-width: 38rem;
+  }
+</style>

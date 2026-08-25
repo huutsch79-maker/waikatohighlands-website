@@ -1,0 +1,55 @@
+---
+// Deliberately no link here to jarvis.waikatohighlands.com — that
+// subdomain stays unlinked from the public site by design.
+---
+
+<header class="site-nav">
+  <div class="wrap site-nav__inner">
+    <a class="site-nav__brand" href="/">Waikato Highlands</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/farm">The Farm</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--bg) 90%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .site-nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 1.5rem;
+  }
+  .site-nav__brand {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: var(--text);
+  }
+  .site-nav__brand:hover {
+    text-decoration: none;
+    color: var(--accent);
+  }
+  nav {
+    display: flex;
+    gap: 1.75rem;
+  }
+  nav a {
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  nav a:hover {
+    color: var(--accent);
+    text-decoration: none;
+  }
+</style>
