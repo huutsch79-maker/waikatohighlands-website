@@ -1,25 +1,32 @@
 ---
+import { getEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
 import PhotoBlock from "../components/PhotoBlock.astro";
+
+const entry = await getEntry("pages", "home");
+const { sections } = entry!.data;
+const hero = sections.find((s) => s.key === "hero");
+const rest = sections.filter((s) => s.key !== "hero");
 ---
 
 <Layout title="Home">
-  <Hero eyebrow="A family farm" title="Waikato Highlands" tagline="Update this tagline any time — just tell JARVIS what you'd like it to say." />
-  <section class="section">
-    <div class="wrap intro-grid">
-      <div>
-        <h2>Welcome</h2>
-        <p>
-          This paragraph is a placeholder for your homepage introduction. Tell JARVIS what you'd like it to say, or
-          edit it directly in the CMS admin — either way it's live right away.
-        </p>
-        <p><a href="/about">Meet the family &rarr;</a></p>
-        <p><a href="/farm">See the farm &rarr;</a></p>
-      </div>
-      <PhotoBlock alt="Farm landscape" aspect="4 / 3" />
-    </div>
-  </section>
+  <Hero eyebrow="A family farm" title={hero?.heading ?? "Waikato Highlands"} tagline={hero?.body ?? ""} photo={hero?.photo} />
+  {
+    rest.map((section) => (
+      <section class="section">
+        <div class="wrap intro-grid">
+          <div>
+            {section.heading && <h2>{section.heading}</h2>}
+            <p>{section.body}</p>
+            <p><a href="/about">Meet the family &rarr;</a></p>
+            <p><a href="/farm">See the farm &rarr;</a></p>
+          </div>
+          <PhotoBlock src={section.photo} alt={section.heading ?? section.key} aspect="4 / 3" />
+        </div>
+      </section>
+    ))
+  }
 </Layout>
 
 <style>

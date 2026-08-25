@@ -1,19 +1,37 @@
 ---
+import { existsSync } from "node:fs";
+import path from "node:path";
+
 interface Props {
   eyebrow?: string;
   title: string;
   tagline: string;
+  photo?: string;
 }
-const { eyebrow, title, tagline } = Astro.props;
+const { eyebrow, title, tagline, photo } = Astro.props;
+const exists = photo ? existsSync(path.join(process.cwd(), "public", "photos", photo)) : false;
 ---
 
-<section class="hero">
-  <div class="wrap">
-    {eyebrow && <span class="eyebrow">{eyebrow}</span>}
-    <h1>{title}</h1>
-    <p class="hero__tagline">{tagline}</p>
-  </div>
-</section>
+{
+  exists ? (
+    <section class="hero hero--photo">
+      <img class="hero__image" src={`/photos/${photo}`} alt={title} />
+      <div class="wrap hero__caption">
+        {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+        <h1>{title}</h1>
+        <p class="hero__tagline">{tagline}</p>
+      </div>
+    </section>
+  ) : (
+    <section class="hero">
+      <div class="wrap">
+        {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+        <h1>{title}</h1>
+        <p class="hero__tagline">{tagline}</p>
+      </div>
+    </section>
+  )
+}
 
 <style>
   .hero {
@@ -27,5 +45,18 @@ const { eyebrow, title, tagline } = Astro.props;
     font-size: 1.2rem;
     color: var(--text-muted);
     max-width: 38rem;
+  }
+
+  .hero--photo {
+    padding: 0 0 3.5rem;
+  }
+  .hero__image {
+    display: block;
+    width: 100%;
+    height: min(70vh, 640px);
+    object-fit: cover;
+  }
+  .hero--photo .hero__caption {
+    padding-top: 2.5rem;
   }
 </style>

@@ -1,0 +1,15 @@
+{
+  "title": "Home",
+  "sections": [
+    {
+      "key": "hero",
+      "heading": "Waikato Highlands",
+      "body": "Update this tagline any time — just tell JARVIS what you'd like it to say. Once a real photo is added here (via chat or the CMS), it becomes the full-width hero image."
+    },
+    {
+      "key": "welcome",
+      "heading": "Welcome",
+      "body": "This paragraph is a placeholder for your homepage introduction. Tell JARVIS what you'd like it to say, or edit it directly in the CMS admin — either way it's live right away."
+    }
+  ]
+}
