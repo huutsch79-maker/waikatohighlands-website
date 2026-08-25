@@ -49,12 +49,42 @@ const exists = photo ? existsSync(path.join(process.cwd(), "public", "photos", p
 
   .hero--photo {
     padding: 0 0 3.5rem;
+    overflow: hidden;
   }
   .hero__image {
     display: block;
     width: 100%;
-    height: min(70vh, 640px);
+    height: min(76vh, 700px);
     object-fit: cover;
+    object-position: center 40%;
+    transform-origin: center 45%;
+    animation:
+      hero-fade 900ms ease-out both,
+      hero-zoom 24s ease-out 900ms both;
+  }
+
+  @keyframes hero-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes hero-zoom {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.08);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__image {
+      animation: none;
+    }
   }
   .hero--photo .hero__caption {
     padding-top: 2.5rem;
