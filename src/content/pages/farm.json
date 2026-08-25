@@ -20,6 +20,10 @@
       "key": "mob-3",
       "heading": "Mob Three",
       "body": "A short description of this group."
+    },
+    {
+      "key": "intro-2",
+      "body": "That animal is the Scottish Highland."
     }
   ]
 }
