@@ -6,8 +6,15 @@ import { slotNumberFor } from "../photoSlots";
 
 const entry = await getEntry("pages", "farm");
 const { title, sections } = entry!.data;
-const intro = sections.filter((s) => !s.key.startsWith("mob"));
 const mobs = sections.filter((s) => s.key.startsWith("mob"));
+// Everything that isn't a "mob" card still gets its own photo row when one
+// is set — not tied to the section's key at all. A section counts as
+// photo-eligible either because it already has a photo, or because it's
+// been registered in src/photoSlots.ts (JARVIS adds an entry there when it
+// decides a section should carry a photo — see that file's own comments).
+// A section with neither stays a plain full-width text block, so most of
+// the love-letter narrative isn't cluttered with empty placeholder boxes.
+const other = sections.filter((s) => !s.key.startsWith("mob"));
 ---
 
 <Layout title={title}>
@@ -16,12 +23,23 @@ const mobs = sections.filter((s) => s.key.startsWith("mob"));
       <span class="eyebrow">The Farm</span>
       <h1>{title}</h1>
       {
-        intro.map((section) => (
-          <div>
-            {section.heading && <h2>{section.heading}</h2>}
-            <p>{section.body}</p>
-          </div>
-        ))
+        other.map((section) => {
+          const photoEligible = Boolean(section.photo) || slotNumberFor("farm", section.key) !== undefined;
+          return photoEligible ? (
+            <div class="farm-row">
+              <div>
+                {section.heading && <h2>{section.heading}</h2>}
+                <p>{section.body}</p>
+              </div>
+              <PhotoBlock src={section.photo} alt={section.heading ?? section.key} slotNumber={slotNumberFor("farm", section.key)} />
+            </div>
+          ) : (
+            <div>
+              {section.heading && <h2>{section.heading}</h2>}
+              <p>{section.body}</p>
+            </div>
+          );
+        })
       }
     </div>
   </section>
@@ -49,6 +67,18 @@ const mobs = sections.filter((s) => s.key.startsWith("mob"));
 </Layout>
 
 <style>
+  .farm-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    align-items: center;
+    margin: 3rem 0;
+  }
+  @media (max-width: 42rem) {
+    .farm-row {
+      grid-template-columns: 1fr;
+    }
+  }
   .mob-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));

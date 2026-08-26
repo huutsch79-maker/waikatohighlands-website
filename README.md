@@ -24,7 +24,9 @@ Not by a static host (Netlify/Vercel/etc.) — this repo's own build output is s
 }
 ```
 
-`sections` is a **list**, not a keyed object — that's what lets the CMS's list widget (add/remove/reorder/edit items visually) bind to it directly. `photo`, when set, is a path relative to `src/assets/photos/` with no leading slash (e.g. `about/family.jpg`, not `/photos/about/family.jpg`). A farm-page section whose `key` starts with `mob` renders in the "Our Mobs" card grid on `/farm`; every other section renders as a plain text block. This exact shape — the list form, the `photo` convention — must stay in sync with `src/content/config.ts`'s schema here and with the JARVIS module that writes it; if one changes, change all three.
+`sections` is a **list**, not a keyed object — that's what lets the CMS's list widget (add/remove/reorder/edit items visually) bind to it directly. `photo`, when set, is a path relative to `src/assets/photos/` with no leading slash (e.g. `about/family.jpg`, not `/photos/about/family.jpg`). Any section on any page can carry a photo. On the farm page specifically, a section whose `key` starts with `mob` renders as a card in the "Our Mobs" grid; any other farm section renders as a plain text block, or — the moment it has a `photo` set or an entry in `src/photoSlots.ts` — a side-by-side text+photo row instead, no template change required either way. This exact shape — the list form, the `photo` convention — must stay in sync with `src/content/config.ts`'s schema here and with the JARVIS module that writes it; if one changes, change all three.
+
+Every photo slot on the site (whether filled or still a placeholder) has a stable, hand-assigned number in `src/photoSlots.ts`, referenced in chat as "photo 1", "photo 2", etc. — see that file's own comments for the convention.
 
 Until a photo path actually exists under `src/assets/photos/`, pages show an honest "Photo coming soon" placeholder instead of a broken image — see `src/components/PhotoBlock.astro`.
 
