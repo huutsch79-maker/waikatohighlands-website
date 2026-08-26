@@ -3,6 +3,7 @@ import { getEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
 import PhotoBlock from "../components/PhotoBlock.astro";
+import { slotNumberFor } from "../photoSlots";
 
 const entry = await getEntry("pages", "home");
 const { sections } = entry!.data;
@@ -22,7 +23,7 @@ const rest = sections.filter((s) => s.key !== "hero");
             <p><a href="/about">Meet the family &rarr;</a></p>
             <p><a href="/farm">See the farm &rarr;</a></p>
           </div>
-          <PhotoBlock src={section.photo} alt={section.heading ?? section.key} aspect="4 / 3" />
+          <PhotoBlock src={section.photo} alt={section.heading ?? section.key} aspect="4 / 3" slotNumber={slotNumberFor("home", section.key)} />
         </div>
       </section>
     ))

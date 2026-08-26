@@ -6,8 +6,10 @@ interface Props {
   alt: string;
   aspect?: string; // CSS aspect-ratio, e.g. "4 / 3"
   rounded?: boolean;
+  /** From src/photoSlots.ts — shown only on the empty-placeholder state, so "photo 2" has a stable, visible number to point at in chat until it's filled. */
+  slotNumber?: number;
 }
-const { src, alt, aspect = "4 / 3", rounded = true } = Astro.props;
+const { src, alt, aspect = "4 / 3", rounded = true, slotNumber } = Astro.props;
 
 // Resolved against src/assets/photos/ (not public/) so Astro's real image
 // pipeline (resize, re-encode, srcset) runs on it at build time — see
@@ -37,6 +39,7 @@ const resolved = src ? photoFiles[`/src/assets/photos/${src}`]?.default : undefi
     />
   ) : (
     <div class:list={["photo-block", "photo-block--placeholder", { "photo-block--rounded": rounded }]} style={`aspect-ratio: ${aspect}`} role="img" aria-label={alt}>
+      {slotNumber !== undefined && <span class="photo-block__number">Photo {slotNumber}</span>}
       <span>Photo coming soon</span>
     </div>
   )
@@ -54,11 +57,19 @@ const resolved = src ? photoFiles[`/src/assets/photos/${src}`]?.default : undefi
   }
   .photo-block--placeholder {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 0.35rem;
     background: linear-gradient(135deg, var(--accent-soft), var(--bg-alt));
     color: var(--text-muted);
     font-size: 0.85rem;
     border: 1px dashed var(--border);
+  }
+  .photo-block__number {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--accent);
   }
 </style>

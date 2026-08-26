@@ -2,6 +2,7 @@
 import { getEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import PhotoBlock from "../components/PhotoBlock.astro";
+import { slotNumberFor } from "../photoSlots";
 
 const entry = await getEntry("pages", "about");
 const { title, sections } = entry!.data;
@@ -19,7 +20,7 @@ const { title, sections } = entry!.data;
               {section.heading && <h2>{section.heading}</h2>}
               <p>{section.body}</p>
             </div>
-            <PhotoBlock src={section.photo} alt={section.heading ?? section.key} />
+            <PhotoBlock src={section.photo} alt={section.heading ?? section.key} slotNumber={slotNumberFor("about", section.key)} />
           </div>
         ))
       }

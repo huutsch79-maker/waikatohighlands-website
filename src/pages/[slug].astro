@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import PhotoBlock from "../components/PhotoBlock.astro";
+import { slotNumberFor } from "../photoSlots";
 
 export async function getStaticPaths() {
   const reservedSlugs = new Set(["home", "about", "farm"]);
@@ -26,7 +27,7 @@ const { title, sections } = entry.data;
               {section.heading && <h2>{section.heading}</h2>}
               <p>{section.body}</p>
             </div>
-            <PhotoBlock src={section.photo} alt={section.heading ?? section.key} />
+            <PhotoBlock src={section.photo} alt={section.heading ?? section.key} slotNumber={slotNumberFor(entry.id, section.key)} />
           </div>
         ))
       }

@@ -2,6 +2,7 @@
 import { getEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import PhotoBlock from "../components/PhotoBlock.astro";
+import { slotNumberFor } from "../photoSlots";
 
 const entry = await getEntry("pages", "farm");
 const { title, sections } = entry!.data;
@@ -33,7 +34,7 @@ const mobs = sections.filter((s) => s.key.startsWith("mob"));
           <div class="mob-grid">
             {mobs.map((section) => (
               <article class="card mob-card">
-                <PhotoBlock src={section.photo} alt={section.heading ?? section.key} aspect="4 / 3" rounded={false} />
+                <PhotoBlock src={section.photo} alt={section.heading ?? section.key} aspect="4 / 3" rounded={false} slotNumber={slotNumberFor("farm", section.key)} />
                 <div class="mob-card__body">
                   {section.heading && <h3>{section.heading}</h3>}
                   <p>{section.body}</p>
