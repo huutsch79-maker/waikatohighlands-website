@@ -45,19 +45,8 @@ npm run dev
 
 ## GitHub OAuth login for /admin
 
-Sveltia CMS (like Decap CMS before it) needs a small OAuth client to complete GitHub's OAuth handshake — it can't do that purely client-side from a static page. `admin/config.yml` is otherwise ready to go (backend, collections, and fields all match this repo's content shape); what's missing is pointing it at a deployed OAuth worker. This doesn't block JARVIS's chat-driven edits at all — those authenticate straight to GitHub with a static token, no OAuth handshake involved. It only blocks a human logging into `/admin`.
+Sveltia CMS (like Decap CMS before it) needs a small OAuth client to complete GitHub's OAuth handshake — it can't do that purely client-side from a static page. This doesn't block JARVIS's chat-driven edits at all — those authenticate straight to GitHub with a static token, no OAuth handshake involved. It only affects a human logging into `/admin`.
 
-Use Sveltia's own maintained worker, [`sveltia/sveltia-cms-auth`](https://github.com/sveltia/sveltia-cms-auth), rather than a hand-rolled proxy — it's already built for exactly this and shouldn't be reimplemented or vendored into this repo.
+Deployed: [`sveltia/sveltia-cms-auth`](https://github.com/sveltia/sveltia-cms-auth) (Sveltia's own maintained worker, not a hand-rolled proxy) is live at `https://sveltia-cms-auth.huutsch79.workers.dev`, referenced by `base_url` in `admin/config.yml`. Its GitHub OAuth App restricts logins to `waikatohighlands.com` via the Worker's `ALLOWED_DOMAINS` variable.
 
-1. **Register a GitHub OAuth App** — GitHub → Settings → Developer settings → OAuth Apps → New OAuth App.
-   - Homepage URL: `https://waikatohighlands.com`
-   - Authorization callback URL: `https://sveltia-cms-auth.<your-subdomain>.workers.dev/callback` (you'll know the real subdomain after step 2 — come back and set this once deployed).
-   - Note the generated Client ID and Client Secret.
-2. **Deploy the worker** — clone `sveltia/sveltia-cms-auth` and run `wrangler deploy` (or use its one-click Cloudflare deploy button). This is a separate small Cloudflare Worker, not part of this repo — it could run alongside `website-server`'s Cloudflare Tunnel setup, or as its own Worker, since Workers don't need the NUC at all.
-3. **Set the worker's environment variables** in the Cloudflare dashboard (Settings → Variables) for that Worker:
-   - `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` — from step 1.
-   - `ALLOWED_DOMAINS` — set to `waikatohighlands.com` so only this site can use it.
-4. **Go back and fix the callback URL** in the GitHub OAuth App (step 1) to match the real Worker URL Cloudflare assigned.
-5. **Uncomment `base_url` in `admin/config.yml`** and set it to that same Worker URL, then commit.
-
-Once all five steps are done, `/admin` will complete GitHub logins for human editors.
+To redeploy or rotate credentials later: clone `sveltia/sveltia-cms-auth`, `npx wrangler deploy`, and set `GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET`/`ALLOWED_DOMAINS` in that Worker's Cloudflare dashboard settings (Settings → Variables and Secrets). A new deploy keeps the same URL as long as the Worker name is unchanged, so `admin/config.yml`'s `base_url` and the GitHub OAuth App's callback URL don't need to change with it.
